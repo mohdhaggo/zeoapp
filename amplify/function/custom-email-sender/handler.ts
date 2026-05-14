@@ -1,13 +1,15 @@
-import type { Handler } from 'aws-lambda';
+import type { CustomEmailSenderTriggerHandler } from 'aws-lambda/trigger/cognito-user-pool-trigger';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
 const sesClient = new SESClient({ region: process.env.AWS_REGION });
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@zeoshields.com';
 
-export const handler: Handler = async (event) => {
+export const handler: CustomEmailSenderTriggerHandler = async (event) => {
   console.log('Custom email sender trigger:', event);
   
-  const { email, code, userAttributes } = event.request;
+  const { code, userAttributes } = event.request;
+  const email = userAttributes?.email;
+  const verificationCode = code || '';
   
   // Only handle verification codes
   if (event.triggerSource === 'CustomEmailSender_SignUp' || 
@@ -31,7 +33,7 @@ export const handler: Handler = async (event) => {
           <div class="header">
             <h2>Zeo Shields Admin Login</h2>
           </div>
-          <div class="otp-code">${code}</div>
+          <div class="otp-code">${verificationCode}</div>
           <p style="text-align: center;">This verification code is valid for 10 minutes.</p>
           <div class="footer">
             <p>If you didn't request this code, please ignore this email.</p>
@@ -41,6 +43,11 @@ export const handler: Handler = async (event) => {
       </html>
     `;
     
+    if (!email) {
+      console.warn('No email address available in Cognito user attributes. Skipping SES send.');
+      return event;
+    }
+
     const params = {
       Source: FROM_EMAIL,
       Destination: { ToAddresses: [email] },
