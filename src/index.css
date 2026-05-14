@@ -12,10 +12,12 @@
 
 html, body, #root {
   margin: 0 !important;
-  padding: 0px 80px !important;
+  padding: 0 !important;
   width: 100% !important;
+  height: 100% !important;
   max-width: 100% !important;
   overflow-x: hidden !important;
+  overflow-y: auto !important;
   background: #010101;
 }
 
@@ -23,7 +25,11 @@ body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   color: #EAEAEA;
   background: #010101;
-  min-height: 100vh;
+  min-height: 100%;
+}
+
+#root {
+  min-height: 100%;
 }
 
 /* Remove any possible margins from all block elements */
@@ -32,12 +38,12 @@ div, section, header, footer, nav, article, main, aside {
   padding: 0;
 }
 
-/* Container - FULL WIDTH */
+/* Container - CENTERED PAGE WIDTH */
 .container {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  padding: 0 30px !important;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 24px;
   position: relative;
   z-index: 2;
   box-sizing: border-box;
@@ -45,24 +51,13 @@ div, section, header, footer, nav, article, main, aside {
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 15px !important;
+    padding: 0 15px;
   }
 }
 
 ::selection {
   background: #E50914;
   color: white;
-}
-
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #111;
-}
-::-webkit-scrollbar-thumb {
-  background: #E50914;
-  border-radius: 10px;
 }
 
 h1, h2, h3, .logo-font, .nav-link, .btn, .card-category {
@@ -86,15 +81,15 @@ h1, h2, h3, .logo-font, .nav-link, .btn, .card-category {
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  left: 0;
+  right: 0;
+  z-index: 9999;
   background: rgba(1, 1, 1, 0.95);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(229, 9, 20, 0.6);
-  padding: 18px 30px;
+  padding: 18px 24px;
   width: 100%;
   margin: 0;
-  left: 0;
-  right: 0;
 }
 
 @media (max-width: 768px) {
@@ -352,6 +347,50 @@ h1, h2, h3, .logo-font, .nav-link, .btn, .card-category {
   margin: 20px 0 30px;
 }
 
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.about-section {
+  background: #0B0B10;
+  border-radius: 40px;
+  padding: 48px;
+  margin: 60px 0;
+  border: 1px solid #222;
+}
+
+.about-section h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.about-section p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.read-more {
+  margin-top: 20px;
+  display: inline-block;
+  color: #E50914;
+  text-decoration: none;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  text-align: center;
+  margin: 60px 0 30px;
+}
+
+.page-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  border-left: 5px solid #E50914;
+  padding-left: 20px;
+}
+
 @media (max-width: 900px) {
   .static-prefix, .animated-word {
     font-size: 2.2rem;
@@ -424,10 +463,14 @@ h1, h2, h3, .logo-font, .nav-link, .btn, .card-category {
 }
 
 .product-img {
-  height: 260px;
-  background-size: cover;
-  background-position: center;
   position: relative;
+}
+
+.product-card img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  height: 260px;
 }
 
 .product-badge {
@@ -442,16 +485,40 @@ h1, h2, h3, .logo-font, .nav-link, .btn, .card-category {
   font-family: 'Orbitron', monospace;
 }
 
-.product-content {
+.card-content {
   padding: 28px 24px;
 }
 
-.product-title {
+.card-category {
   font-size: 1.6rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: #E50914;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.product-subtitle {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 10px;
+}
+
+.btn-details {
+  background: #F0F0F0;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.8rem;
   font-family: 'Orbitron', monospace;
+  color: #010101;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.btn-details:hover {
+  background: #FFFFFF;
+  transform: translateY(-2px);
 }
 
 /* Feature Grid */
@@ -479,6 +546,15 @@ h1, h2, h3, .logo-font, .nav-link, .btn, .card-category {
   text-align: center;
   margin: 60px 0;
   border: 1px solid rgba(229,9,20,0.2);
+}
+
+.cta-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+}
+
+.cta-section p {
+  margin-bottom: 30px;
 }
 
 /* Footer - Full Width */

@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
+const words = ['Protection', 'Performance', 'Durability', 'Innovation', 'Domination'];
 
 export const HomePage: React.FC = () => {
-  const [currentWord, setCurrentWord] = useState('Protection');
+  const [currentWord, setCurrentWord] = useState(words[0]);
   const [isAnimating, setIsAnimating] = useState(false);
+  const wordWrapperRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const words = ['Protection', 'Performance', 'Durability', 'Innovation', 'Domination'];
     let wordIndex = 0;
-    
+
     const interval = setInterval(() => {
       setIsAnimating(true);
       wordIndex = (wordIndex + 1) % words.length;
       setCurrentWord(words[wordIndex]);
       setTimeout(() => setIsAnimating(false), 400);
     }, 4000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -30,16 +32,79 @@ export const HomePage: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const setFixedWrapperWidth = () => {
+      if (!wordWrapperRef.current) return;
+      const wrapper = wordWrapperRef.current;
+      const tempSpan = document.createElement('span');
+      tempSpan.style.cssText = `visibility:hidden;position:absolute;font-size:4rem;font-weight:800;font-family:'Orbitron',monospace;white-space:nowrap;top:-9999px;left:-9999px;`;
+      document.body.appendChild(tempSpan);
+      let maxWidth = 0;
+      words.forEach((word) => {
+        tempSpan.textContent = word;
+        const width = tempSpan.offsetWidth;
+        if (width > maxWidth) maxWidth = width;
+      });
+      document.body.removeChild(tempSpan);
+      wrapper.style.width = `${maxWidth + 15}px`;
+    };
+
+    setFixedWrapperWidth();
+    window.addEventListener('resize', setFixedWrapperWidth);
+    return () => window.removeEventListener('resize', setFixedWrapperWidth);
+  }, []);
+
   const categories = [
-    { name: 'PPF', color: '#E50914', image: '/PPF-cat.webp', description: 'Premium Paint Protection Film engineered for ultimate durability and performance.', url: '/ppf-cat' },
-    { name: 'Window Tint', color: '#1E6BFF', image: '/wintint-cat.webp', description: 'COMING SOON.', url: '#', comingSoon: true },
-    { name: 'Windshield Film', color: '#8A8A8A', image: '/windshield-cat.webp', description: 'COMING SOON.', url: '#', comingSoon: true }
+    {
+      name: 'PPF',
+      color: '#E50914',
+      image: '/PPF-cat.webp',
+      description: 'Premium Paint Protection Film engineered for ultimate durability and performance worldwide.',
+      url: '/ppf-cat'
+    },
+    {
+      name: 'Window Tint',
+      color: '#1E6BFF',
+      image: '/wintint-cat.webp',
+      description: 'COMING SOON.',
+      url: '#',
+      comingSoon: true
+    },
+    {
+      name: 'Windshield Film',
+      color: '#8A8A8A',
+      image: '/windshield-cat.webp',
+      description: 'COMING SOON.',
+      url: '#',
+      comingSoon: true
+    }
   ];
 
   const products = [
-    { name: 'TITAN PPF', desc: 'Maximum protection PPF with 10-year durability.', img: '/01-titan-ppf-white.webp', url: '/titan-ppf', badge: '10 YEAR WARRANTY' },
-    { name: 'ULTRA PPF', desc: 'Reliable protection with advanced technology.', img: '/01-ultra-ppf-red.webp', url: '/ultra-ppf', badge: '5 YEAR WARRANTY' },
-    { name: 'TITAN SATIN PPF', desc: 'Premium satin finish with ultimate protection.', img: '/01-stain-ppf-blue.webp', url: '/titan-satin-ppf', badge: 'SATIN FINISH' }
+    {
+      name: 'TITAN PPF',
+      desc: 'Maximum protection PPF with 10-year durability.',
+      img: '/01-titan-ppf-white.webp',
+      url: '/titan-ppf',
+      badge: '10 YEAR WARRANTY',
+      color: '#E50914'
+    },
+    {
+      name: 'ULTRA PPF',
+      desc: 'Reliable protection with advanced technology.',
+      img: '/01-ultra-ppf-red.webp',
+      url: '/ultra-ppf',
+      badge: '5 YEAR WARRANTY',
+      color: '#E50914'
+    },
+    {
+      name: 'TITAN SATIN PPF',
+      desc: 'Premium satin finish with ultimate protection.',
+      img: '/01-stain-ppf-blue.webp',
+      url: '/titan-satin-ppf',
+      badge: 'SATIN FINISH',
+      color: '#E50914'
+    }
   ];
 
   return (
@@ -52,7 +117,7 @@ export const HomePage: React.FC = () => {
           </div>
           <div className="animated-word-container">
             <span className="static-prefix">Ultimate</span>
-            <div className="word-wrapper">
+            <div className="word-wrapper" ref={wordWrapperRef}>
               <span className="animated-word" style={{ animation: isAnimating ? 'wordFade 0.4s ease-out' : 'none' }}>
                 {currentWord}
               </span>
@@ -91,7 +156,8 @@ export const HomePage: React.FC = () => {
         <div className="product-grid fade-section">
           {products.map((product, idx) => (
             <div key={idx} className="product-card" onClick={() => window.location.href = product.url}>
-              <div className="product-img" style={{ backgroundImage: `url('${product.img}')` }}>
+              <div className="product-img">
+                <img src={product.img} alt={product.name} />
                 <div className="product-badge" style={{ background: product.badge === 'SATIN FINISH' ? '#8A8A8A' : '#E50914' }}>{product.badge}</div>
               </div>
               <div className="product-content">

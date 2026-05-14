@@ -7,24 +7,14 @@
 body {
   background: #010101;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  color: #EAEAEA;
+  color: #E50914;
   overflow-x: hidden;
+  width: 100%;
 }
 
 ::selection {
   background: #E50914;
   color: white;
-}
-
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-track {
-  background: #111;
-}
-::-webkit-scrollbar-thumb {
-  background: #E50914;
-  border-radius: 10px;
 }
 
 h1, h2, h3, .logo-font, .nav-link, .btn, .card-category {
@@ -44,9 +34,10 @@ h1, h2, h3, .logo-font, .nav-link, .btn, .card-category {
 }
 
 .container {
-  max-width: 1300px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 0 24px;
   position: relative;
   z-index: 2;
 }

@@ -11,7 +11,6 @@ import { AdminLoginPage } from './pages/AdminLoginPage';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
-import './index.css';
 
 function App() {
   const path = window.location.pathname;

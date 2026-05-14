@@ -15,25 +15,8 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="navbar" style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 1000,
-      background: 'rgba(1, 1, 1, 0.95)',
-      backdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(229, 9, 20, 0.6)',
-      padding: '18px 0',
-      width: '100%'
-    }}>
-      <div className="container nav-flex" style={{
-        maxWidth: '1300px',
-        margin: '0 auto',
-        padding: '0 30px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%'
-      }}>
+    <nav className="navbar">
+      <div className="container nav-flex">
         <a href="/" className="logo-link" style={{ textDecoration: 'none', color: 'inherit' }}>
           <div className="logo-area" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
             <img 
