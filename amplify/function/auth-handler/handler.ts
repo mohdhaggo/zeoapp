@@ -1,17 +1,6 @@
-import { defineAuth } from '@aws-amplify/backend';
+import type { Handler } from 'aws-lambda';
 
-export const auth = defineAuth({
-  loginWith: {
-    email: true,
-  },
-  userAttributes: {
-    email: {
-      required: true,
-      mutable: false,
-    },
-  },
-  // Enable custom email sender for OTP
-  triggers: {
-    customEmailSender: 'customEmailSender',
-  },
-});
+export const handler: Handler = async (event) => {
+  console.log('Auth handler invoked:', JSON.stringify(event, null, 2));
+  return event;
+};
