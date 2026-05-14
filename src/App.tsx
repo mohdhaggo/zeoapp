@@ -1,4 +1,3 @@
-import React from 'react';
 import { HomePage } from './pages/HomePage';
 import { AboutPage } from './pages/AboutPage';
 import { ProductsPage } from './pages/ProductsPage';
@@ -8,13 +7,21 @@ import { UltraPPFPage } from './pages/UltraPPFPage';
 import { TitanSatinPPFPage } from './pages/TitanSatinPPFPage';
 import { WarrantyPage } from './pages/WarrantyPage';
 import { ContactPage } from './pages/ContactPage';
+import { AdminLoginPage } from './pages/AdminLoginPage';
+import { AdminDashboard } from './pages/AdminDashboard';
 import { Navbar } from './components/common/Navbar';
 import { Footer } from './components/common/Footer';
-import './App.css';
+import './index.css';
 
 function App() {
-  const getCurrentPage = () => {
-    const path = window.location.pathname;
+  const path = window.location.pathname;
+  
+  // Admin routes (no navbar/footer)
+  if (path === '/admin-login') return <AdminLoginPage />;
+  if (path === '/dashboard') return <AdminDashboard />;
+  
+  // Public routes with navbar/footer
+  const getPublicPage = () => {
     if (path === '/about') return <AboutPage />;
     if (path === '/products') return <ProductsPage />;
     if (path === '/ppf-cat') return <PPFPage />;
@@ -26,18 +33,12 @@ function App() {
     return <HomePage />;
   };
 
-  const isAdminRoute = window.location.pathname === '/admin-login' || window.location.pathname === '/dashboard';
-  
-  if (isAdminRoute) {
-    return getCurrentPage();
-  }
-
   return (
-    <div>
+    <>
       <Navbar />
-      {getCurrentPage()}
+      {getPublicPage()}
       <Footer />
-    </div>
+    </>
   );
 }
 

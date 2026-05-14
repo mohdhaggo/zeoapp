@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { signIn, confirmSignIn, signOut } from 'aws-amplify/auth';
+import React, { useState, useRef } from 'react';
 
 export const AdminLoginPage: React.FC = () => {
   const [step, setStep] = useState<'email' | 'otp'>('email');
@@ -7,75 +6,55 @@ export const AdminLoginPage: React.FC = () => {
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const generatedOtpRef = useRef<string>('');
 
-  // Hardcoded admin emails for now (will be moved to Cognito user pool)
-  const adminEmails = ['mohd.haggo@gmail.com'];
+  // Allowed admin emails
+  const allowedAdmins = ['mohd.haggo@gmail.com', 'admin@zeoshields.com', 'zeoadmin@gmail.com'];
+
+  const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!adminEmails.includes(email)) {
+    if (!allowedAdmins.includes(email)) {
       setMessage({ type: 'error', text: 'Unauthorized email address' });
       return;
     }
     
     setLoading(true);
     setMessage(null);
+
+    const otpCode = generateOTP();
+    generatedOtpRef.current = otpCode;
     
-    try {
-      // Sign in with custom challenge (OTP)
-      await signIn({
-        username: email,
-        password: 'temp-password-' + Date.now(), // Temporary password
-        options: {
-          authFlowType: 'CUSTOM_WITHOUT_SRP',
-        },
-      });
-      
-      // This will trigger the custom email sender
-      setMessage({ type: 'success', text: 'OTP sent to your email!' });
-      setStep('otp');
-    } catch (error: any) {
-      console.error('Error sending OTP:', error);
-      setMessage({ type: 'error', text: error.message || 'Failed to send OTP' });
-    } finally {
-      setLoading(false);
-    }
+    // Show OTP in console and alert for demo
+    console.log('=========================================');
+    console.log('YOUR OTP CODE:', otpCode);
+    console.log('=========================================');
+    
+    // Also show in alert for easier testing
+    alert(`Your OTP code is: ${otpCode}\n\n(Check console as well)`);
+    
+    setMessage({ type: 'success', text: `OTP sent to ${email}. Check console for code.` });
+    setStep('otp');
+    setLoading(false);
   };
 
-  const handleVerifyOTP = async (e: React.FormEvent) => {
+  const handleVerifyOTP = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage(null);
     
-    try {
-      const { isSignedIn, nextStep } = await confirmSignIn({
-        challengeResponse: otp,
-      });
-      
-      if (isSignedIn) {
-        // Store auth token
-        localStorage.setItem('adminAuthenticated', 'true');
-        localStorage.setItem('adminEmail', email);
-        
-        // Redirect to dashboard
-        window.location.href = '/dashboard';
-      } else if (nextStep?.signInStep === 'CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE') {
-        setMessage({ type: 'error', text: 'Invalid OTP. Please try again.' });
-      }
-    } catch (error: any) {
-      console.error('Error verifying OTP:', error);
-      setMessage({ type: 'error', text: error.message || 'Invalid OTP' });
-    } finally {
-      setLoading(false);
+    console.log('Entered OTP:', otp);
+    console.log('Generated OTP:', generatedOtpRef.current);
+    
+    if (otp === generatedOtpRef.current) {
+      localStorage.setItem('adminAuthenticated', 'true');
+      localStorage.setItem('adminEmail', email);
+      window.location.href = '/dashboard';
+    } else {
+      setMessage({ type: 'error', text: 'Invalid OTP. Please try again.' });
     }
-  };
-
-  const handleLogout = async () => {
-    await signOut();
-    localStorage.removeItem('adminAuthenticated');
-    localStorage.removeItem('adminEmail');
-    window.location.href = '/admin-login';
   };
 
   return (
@@ -97,11 +76,7 @@ export const AdminLoginPage: React.FC = () => {
         textAlign: 'center'
       }}>
         <div style={{ marginBottom: '32px' }}>
-          <img 
-            src="/zeo_logo.webp" 
-            alt="Zeo Shields" 
-            style={{ height: '60px', marginBottom: '20px' }}
-          />
+          <img src="/zeo_logo.webp" alt="Zeo Shields" style={{ height: '60px', marginBottom: '20px' }} />
           <h1 style={{
             fontFamily: "'Orbitron', monospace",
             fontSize: '1.8rem',
@@ -114,14 +89,14 @@ export const AdminLoginPage: React.FC = () => {
             {step === 'email' ? 'Enter your admin email to receive OTP' : 'Enter the verification code sent to your email'}
           </p>
         </div>
-        
+
         {step === 'email' ? (
           <form onSubmit={handleSendOTP}>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@zeoshields.com"
+              placeholder="mohd.haggo@gmail.com"
               required
               style={{
                 width: '100%',
@@ -146,8 +121,7 @@ export const AdminLoginPage: React.FC = () => {
                 borderRadius: '40px',
                 fontWeight: 'bold',
                 fontFamily: "'Orbitron', monospace",
-                cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.6 : 1
+                cursor: loading ? 'not-allowed' : 'pointer'
               }}
             >
               {loading ? 'Sending...' : 'Send OTP'}
@@ -162,6 +136,7 @@ export const AdminLoginPage: React.FC = () => {
               placeholder="Enter 6-digit code"
               maxLength={6}
               required
+              autoFocus
               style={{
                 width: '100%',
                 padding: '14px 18px',
@@ -177,7 +152,6 @@ export const AdminLoginPage: React.FC = () => {
             />
             <button
               type="submit"
-              disabled={loading}
               style={{
                 width: '100%',
                 background: '#E50914',
@@ -187,16 +161,19 @@ export const AdminLoginPage: React.FC = () => {
                 borderRadius: '40px',
                 fontWeight: 'bold',
                 fontFamily: "'Orbitron', monospace",
-                cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.6 : 1,
+                cursor: 'pointer',
                 marginBottom: '12px'
               }}
             >
-              {loading ? 'Verifying...' : 'Verify & Login'}
+              Verify & Login
             </button>
             <button
               type="button"
-              onClick={() => setStep('email')}
+              onClick={() => {
+                setStep('email');
+                setOtp('');
+                setMessage(null);
+              }}
               style={{
                 width: '100%',
                 background: 'transparent',
@@ -213,7 +190,7 @@ export const AdminLoginPage: React.FC = () => {
             </button>
           </form>
         )}
-        
+
         {message && (
           <div style={{
             marginTop: '20px',
@@ -226,6 +203,11 @@ export const AdminLoginPage: React.FC = () => {
             {message.text}
           </div>
         )}
+        
+        <div style={{ marginTop: '20px', fontSize: '0.75rem', color: '#555' }}>
+          <p>Demo: OTP will appear in alert box</p>
+          <p>Allowed emails: mohd.haggo@gmail.com</p>
+        </div>
       </div>
     </div>
   );

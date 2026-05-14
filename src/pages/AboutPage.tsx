@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { AboutHero } from '../components/about/AboutHero';
 import { AboutContent } from '../components/about/AboutContent';
 import { MissionVision } from '../components/about/MissionVision';
@@ -10,6 +10,8 @@ import { CTASection } from '../components/common/CTASection';
 
 export const AboutPage: React.FC = () => {
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
+
     const fadeElements = document.querySelectorAll('.fade-section');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

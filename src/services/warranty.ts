@@ -1,7 +1,6 @@
 import { generateClient } from 'aws-amplify/api';
-import type { Schema } from '../amplify/data/resource';
 
-const client = generateClient<Schema>();
+const client = generateClient<any>();
 
 export interface WarrantyData {
   customerName: string;

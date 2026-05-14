@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { PageHeader } from '../components/products/PageHeader';
 import { CategoryGrid } from '../components/products/CategoryGrid';
 import { CTASection } from '../components/common/CTASection';
 
 export const ProductsPage: React.FC = () => {
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return;
+
     const fadeElements = document.querySelectorAll('.fade-section');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {

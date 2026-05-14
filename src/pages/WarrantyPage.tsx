@@ -7,7 +7,6 @@ export const WarrantyPage: React.FC = () => {
   const [validWarranty, setValidWarranty] = useState<any>(null);
   const [isEligible, setIsEligible] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [registeredWarranty, setRegisteredWarranty] = useState<any>(null);
   const [regFormData, setRegFormData] = useState({
     fullName: '',
     mobile: '',
@@ -98,13 +97,6 @@ export const WarrantyPage: React.FC = () => {
     try {
       // This will be replaced with actual API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setRegisteredWarranty({
-        warrantyId,
-        ...regFormData,
-        registrationDate: new Date().toLocaleString(),
-        productType: validWarranty?.productType
-      });
       
       alert(`✅ Warranty Successfully Registered!\n\nProduct: ${validWarranty?.productType}\nRegistered to: ${regFormData.fullName}\nRegistration Date: ${new Date().toLocaleString()}\nA confirmation email has been sent.`);
       

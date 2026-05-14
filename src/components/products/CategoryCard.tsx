@@ -19,17 +19,20 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
   navUrl,
   isComingSoon = false 
 }) => {
-  const handleClick = () => {
-    if (navUrl && navUrl !== '#' && !isComingSoon) {
-      window.location.href = navUrl;
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isComingSoon || !navUrl || navUrl === '#') {
+      e.preventDefault();
     }
   };
 
   return (
-    <div 
-      className="cat-card" 
-      data-category={category}
+    <a
+      href={navUrl}
       onClick={handleClick}
+      className="cat-card"
+      data-category={category}
+      role="button"
+      aria-disabled={isComingSoon}
       style={{
         background: '#0C0C12',
         borderRadius: '40px',
@@ -39,7 +42,8 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
         cursor: isComingSoon ? 'not-allowed' : 'pointer',
         textDecoration: 'none',
         display: 'block',
-        opacity: isComingSoon ? 0.7 : 1
+        opacity: isComingSoon ? 0.7 : 1,
+        color: 'inherit'
       }}
     >
       <div 
@@ -102,6 +106,6 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
           transform: translateX(8px);
         }
       `}</style>
-    </div>
+    </a>
   );
 };

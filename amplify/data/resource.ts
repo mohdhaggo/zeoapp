@@ -4,13 +4,16 @@ const schema = `
   type Warranty @model {
     id: ID!
     warrantyNumber: String!
-    customerName: String
-    email: String
-    phone: String
     productName: String!
-    purchaseDate: String
+    manufactureDate: String
     status: String!
     registrationDate: String
+    customerName: String
+    phone: String
+    email: String
+    purchaseDate: String
+    purchaseCountry: String
+    createdAt: String
   }
 
   type ContactSubmission @model {
@@ -23,6 +26,8 @@ const schema = `
     message: String!
     status: String!
     createdAt: String
+    userAgent: String
+    ipAddress: String
   }
 `;
 
